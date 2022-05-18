@@ -13,5 +13,6 @@ namespace GigaPark
     /// </summary>
     public partial class App : Application
     {
+
     }
 }

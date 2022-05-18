@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\nicon\\source\\repos\\GigaPark\\GigaPark\\GigaPark.csproj": {}
+    "E:\\Repositories\\GigaPark\\GIGAPark\\GigaPark\\GigaPark.csproj": {}
   },
   "projects": {
-    "C:\\Users\\nicon\\source\\repos\\GigaPark\\GigaPark\\GigaPark.csproj": {
+    "E:\\Repositories\\GigaPark\\GIGAPark\\GigaPark\\GigaPark.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\nicon\\source\\repos\\GigaPark\\GigaPark\\GigaPark.csproj",
+        "projectUniqueName": "E:\\Repositories\\GigaPark\\GIGAPark\\GigaPark\\GigaPark.csproj",
         "projectName": "GigaPark",
-        "projectPath": "C:\\Users\\nicon\\source\\repos\\GigaPark\\GigaPark\\GigaPark.csproj",
+        "projectPath": "E:\\Repositories\\GigaPark\\GIGAPark\\GigaPark\\GigaPark.csproj",
         "packagesPath": "C:\\Users\\nicon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\nicon\\source\\repos\\GigaPark\\GigaPark\\obj\\",
+        "outputPath": "E:\\Repositories\\GigaPark\\GIGAPark\\GigaPark\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -43,13 +43,17 @@
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "dependencies": {
-            "CommunityToolkit.Mvvm": {
-              "target": "Package",
-              "version": "[7.1.2, )"
-            },
             "EntityFramework": {
               "target": "Package",
               "version": "[6.4.4, )"
+            },
+            "MvvmLight": {
+              "target": "Package",
+              "version": "[5.4.1.1, )"
+            },
+            "MvvmLightLibsStd10": {
+              "target": "Package",
+              "version": "[5.4.1.1, )"
             }
           },
           "imports": [
