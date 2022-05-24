@@ -44,3 +44,4 @@ E:\Repositories\GigaPark\GIGAPark\GigaPark\obj\Debug\net6.0-windows\refint\GigaP
 E:\Repositories\GigaPark\GIGAPark\GigaPark\obj\Debug\net6.0-windows\GigaPark.pdb
 E:\Repositories\GigaPark\GIGAPark\GigaPark\obj\Debug\net6.0-windows\GigaPark.genruntimeconfig.cache
 E:\Repositories\GigaPark\GIGAPark\GigaPark\obj\Debug\net6.0-windows\ref\GigaPark.dll
+E:\Repositories\GigaPark\GIGAPark\GigaPark\obj\Debug\net6.0-windows\App.baml
