@@ -1,11 +1,7 @@
 ﻿/*
  *  App.xaml.cs
- *  Autor: Nico Nowak, Erik Ansmann, Wilhelm Adam
+ *  Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
  */
-
-using System.IO;
-using System.Reflection;
-using System.Windows;
 
 namespace GigaPark
 {

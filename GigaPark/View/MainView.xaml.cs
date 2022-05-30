@@ -1,12 +1,13 @@
 ﻿/*
  *  MainView.xaml.cs
- *  Autor: Nico Nowak, Erik Ansmann, Wilhelm Adam
+ *  Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
  */
 
 using System;
 using System.Windows;
-using GigaPark.Database.Entities;
 using GigaPark.Database.Helpers;
+using GigaPark.Model;
+using GigaPark.Properties;
 using Microsoft.EntityFrameworkCore;
 
 namespace GigaPark.View
@@ -22,6 +23,11 @@ namespace GigaPark.View
         private readonly DataContext _context = new();
 
         /// <summary>
+        ///     Die Instanz des Parkhouse-Services.
+        /// </summary>
+        private readonly ParkhouseService _parkhouseService;
+
+        /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="MainView" />-Klasse.
         /// </summary>
         public MainView()
@@ -32,13 +38,15 @@ namespace GigaPark.View
             ResizeMode = ResizeMode.NoResize;
 
             // Services initialisieren.
-            InitializeServices();
+            _parkhouseService = new ParkhouseService(_context, 
+                                                     Settings.Default.MaxParkplatzCount);
+            InitializeDatabase();
         }
 
         /// <summary>
         ///     Initialisiert die im Programm genutzten Services und Kontexte.
         /// </summary>
-        private void InitializeServices()
+        private void InitializeDatabase()
         {
             // Stellt sicher, dass die Datenbank existiert.
             _context.Database.EnsureCreated();
@@ -46,6 +54,10 @@ namespace GigaPark.View
             // Lädt die Datentabellen aus dem Kontext und stellt diese zur Bearbeitung zur Verfügung.
             _context.Parkplatz.Load();
             _context.Parkschein.Load();
+
+            // Falls noch nicht vorhanden, die Parkplatztabelle mit den wichtigen Daten füllen.
+            // Diese Methode wird nur durchgeführt, wenn die Tabelle leer ist.
+            _parkhouseService.Prepare();
         }
 
         /// <summary>

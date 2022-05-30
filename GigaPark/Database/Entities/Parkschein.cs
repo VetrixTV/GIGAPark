@@ -1,10 +1,16 @@
-﻿using System;
+﻿/*
+ * Parkschein.cs
+ * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
+ */
+
+using System;
 
 namespace GigaPark.Database.Entities
 {
     /// <summary>
     ///     Entity-Modell für die Parkschein-Tabelle.
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class Parkschein
     {
         /// <summary>

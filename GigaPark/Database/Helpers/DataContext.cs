@@ -1,8 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿/*
+ * DataContext.cs
+ * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
+ */
+
 using GigaPark.Database.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace GigaPark.Database.Helpers
 {
@@ -18,10 +20,14 @@ namespace GigaPark.Database.Helpers
         ///         The base implementation does nothing.
         ///     </para>
         ///     <para>
-        ///         In situations where an instance of <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptions" /> may or may not have been passed
-        ///         to the constructor, you can use <see cref="P:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder.IsConfigured" /> to determine if
+        ///         In situations where an instance of <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptions" /> may or may
+        ///         not have been passed
+        ///         to the constructor, you can use
+        ///         <see cref="P:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder.IsConfigured" /> to determine if
         ///         the options have already been set, and skip some or all of the logic in
-        ///         <see cref="M:Microsoft.EntityFrameworkCore.DbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)" />.
+        ///         <see
+        ///             cref="M:Microsoft.EntityFrameworkCore.DbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)" />
+        ///         .
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -38,13 +44,15 @@ namespace GigaPark.Database.Helpers
         }
 
         /// <summary>
-        ///     Gibt die <see cref="DbSet{TEntity}"/>-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die Tabelle "Parkplatz" zu parsen.
+        ///     Gibt die <see cref="DbSet{TEntity}" />-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die
+        ///     Tabelle "Parkplatz" zu parsen.
         /// </summary>
 #pragma warning disable CS8618
         public DbSet<Parkplatz> Parkplatz { get; set; }
 
         /// <summary>
-        ///     Gibt die <see cref="DbSet{TEntity}"/>-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die Tabelle "Parkschein" zu parsen.
+        ///     Gibt die <see cref="DbSet{TEntity}" />-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die
+        ///     Tabelle "Parkschein" zu parsen.
         /// </summary>
         public DbSet<Parkschein> Parkschein { get; set; }
 #pragma warning restore CS8618

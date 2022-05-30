@@ -1,4 +1,8 @@
-﻿using System.Windows;
+﻿/*
+ * DatabaseView.xaml.cs
+ * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
+ */
+
 using GigaPark.Database.Helpers;
 
 namespace GigaPark.View
@@ -6,18 +10,14 @@ namespace GigaPark.View
     /// <summary>
     ///     Interaction logic for DatabaseView.xaml
     /// </summary>
-    public partial class DatabaseView : Window
+    public partial class DatabaseView
     {
-        private readonly DataContext _context;
-
         public DatabaseView(DataContext context)
         {
             InitializeComponent();
 
-            _context = context;
-
-            ParkplatzGrid.ItemsSource = _context.Parkplatz.Local.ToObservableCollection();
-            ParkscheinGrid.ItemsSource = _context.Parkschein.Local.ToObservableCollection();
+            ParkplatzGrid.ItemsSource = context.Parkplatz.Local.ToObservableCollection();
+            ParkscheinGrid.ItemsSource = context.Parkschein.Local.ToObservableCollection();
         }
     }
 }

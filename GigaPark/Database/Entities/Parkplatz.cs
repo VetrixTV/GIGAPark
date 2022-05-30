@@ -1,8 +1,14 @@
-﻿namespace GigaPark.Database.Entities
+﻿/*
+ * Parkplatz.cs
+ * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
+ */
+
+namespace GigaPark.Database.Entities
 {
     /// <summary>
     ///     Entity-Modell für die Parkplatz-Tabelle.
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class Parkplatz
     {
         /// <summary>
