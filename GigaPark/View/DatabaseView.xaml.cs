@@ -19,5 +19,7 @@ namespace GigaPark.View
             ParkplatzGrid.ItemsSource = context.Parkplatz.Local.ToObservableCollection();
             ParkscheinGrid.ItemsSource = context.Parkschein.Local.ToObservableCollection();
         }
+
+        // TODO: Database Reset Button.
     }
 }

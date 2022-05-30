@@ -22,6 +22,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Id}" Width="SizeToHeader" Header="ID" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding IstDauerparkplatz}" Width="SizeToHeader" Header="Dauerparkplatz?" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding ParkscheinId}" Width="SizeToHeader" Header="ParkscheinID" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="ParkscheinGrid"
@@ -34,6 +35,7 @@
                 <DataGridTextColumn Binding="{Binding Einfahrt}" Width="SizeToHeader" Header="Einfahrtszeitpunkt" IsReadOnly="True"/>
                 <DataGridTextColumn Binding="{Binding Ausfahrt}" Width="SizeToHeader" Header="Ausfahrtszeitpunkt" IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding IstDauerparker}" Width="SizeToHeader" Header="Dauerparker?" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding ParkplatzId}" Width="SizeToHeader" Header="Parkplatz" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

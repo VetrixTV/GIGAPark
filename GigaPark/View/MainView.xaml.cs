@@ -38,8 +38,11 @@ namespace GigaPark.View
             ResizeMode = ResizeMode.NoResize;
 
             // Services initialisieren.
-            _parkhouseService = new ParkhouseService(_context, 
+            _parkhouseService = new ParkhouseService(_context,
                                                      Settings.Default.MaxParkplatzCount);
+            EntranceDisplay.Text = "Willkommen im GigaPark!";
+            ExitDisplay.Text = "Bis Baldrian!";
+
             InitializeDatabase();
         }
 
@@ -67,7 +70,7 @@ namespace GigaPark.View
         /// <param name="e"></param>
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            EntranceDisplay.Text = _parkhouseService.DriveIn("OSWD99");
         }
 
         /// <summary>

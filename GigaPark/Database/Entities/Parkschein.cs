@@ -47,5 +47,10 @@ namespace GigaPark.Database.Entities
         ///     Gibt an, ob es sich um einen Dauerparker handelt, oder legt es fest.
         /// </summary>
         public bool IstDauerparker { get; set; }
+
+        /// <summary>
+        ///     Gibt die ID des Parkplatzes an oder legt diese fest.
+        /// </summary>
+        public int ParkplatzId { get; set; }
     }
 }

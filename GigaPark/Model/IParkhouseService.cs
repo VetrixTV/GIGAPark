@@ -15,14 +15,15 @@ namespace GigaPark.Model
         ///     Es müssen mindestens 5 Parkplätze dafür frei sein.
         /// </summary>
         /// <param name="licensePlate">Das Kennzeichen des einfahrenden Fahrzeugs.</param>
-        void DriveIn(string licensePlate);
+        /// /// <param name="isDauerparker">Ist der Parker ein Dauerparker?</param>
+        string DriveIn(string licensePlate, bool isDauerparker);
 
         /// <summary>
         ///     Verwaltet das Ausfahren des Fahrzeugs in der Datenbank.
         ///     Zwischen Dauerparkern und Einzelparkern wird durch das Kennzeichen unterschieden.
         /// </summary>
         /// <param name="licensePlate">Das Kennzeichen des ausfahrenden Fahrzeugs.</param>
-        void DriveOut(string licensePlate);
+        string DriveOut(string licensePlate);
 
         /// <summary>
         ///     Ermittelt, ob genug Parkplätze im Parkhaus noch frei sind.

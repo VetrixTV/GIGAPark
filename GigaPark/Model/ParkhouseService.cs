@@ -42,9 +42,42 @@ namespace GigaPark.Model
         ///     Es müssen mindestens 5 Parkplätze dafür frei sein.
         /// </summary>
         /// <param name="licensePlate">Das Kennzeichen des einfahrenden Fahrzeugs.</param>
-        public void DriveIn(string licensePlate)
+        /// <param name="isDauerparker">Ist der Parker ein Dauerparker?</param>
+        public string DriveIn(string licensePlate, bool isDauerparker = false)
         {
-            throw new NotImplementedException();
+            // Sind mindestens 5 Parkplätze frei?
+            if (_context.Parkplatz.Count(o => o.ParkscheinId == null) < 5)
+            {
+                return ":(\nAktuell sind keine Parkplätze frei.";
+            }
+
+            int parkId = GetAvailableParkplatz(isDauerparker);
+
+            // Eintrag in die Parkscheintabelle hinzufügen.
+            _context.Parkschein.Add(new Parkschein
+            {
+                Kennzeichen = licensePlate,
+                Kosten = 0.00m, // Kosten werden bei Ausfahrt berechnet.
+                Einfahrt = DateTime.Now,
+                Ausfahrt = null,
+                IstDauerparker = isDauerparker,
+                ParkplatzId = parkId
+            });
+            _context.SaveChanges();
+
+            // Eintrag in der Parkplatztabelle anpassen.
+            Parkplatz parkplatz = _context.Parkplatz
+                                          .Where(o => o.Id == parkId)
+                                          .Select(o => o)
+                                          .First();
+
+            parkplatz.ParkscheinId = _context.Parkschein
+                                             .Where(o => o.ParkplatzId == parkId)
+                                             .Select(o => o.Id)
+                                             .First();
+            _context.SaveChanges();
+
+            return "Bitte einfahren.";
         }
 
         /// <summary>
@@ -52,7 +85,7 @@ namespace GigaPark.Model
         ///     Zwischen Dauerparkern und Einzelparkern wird durch das Kennzeichen unterschieden.
         /// </summary>
         /// <param name="licensePlate">Das Kennzeichen des ausfahrenden Fahrzeugs.</param>
-        public void DriveOut(string licensePlate)
+        public string DriveOut(string licensePlate)
         {
             throw new NotImplementedException();
         }
@@ -113,12 +146,36 @@ namespace GigaPark.Model
             {
                 toInsert.Add(new Parkplatz
                 {
-                    IstDauerparkplatz = i < 40 // Nur die ersten 40 Parkplätze, sind für Dauerparker reserviert.
+                    IstDauerparkplatz = i < 40, // Nur die ersten 40 Parkplätze, sind für Dauerparker reserviert.
+                    ParkscheinId = null
                 });
             }
 
             _context.Parkplatz.AddRange(toInsert);
             _context.SaveChanges();
+        }
+
+        /// <summary>
+        ///     Ermittelt die ID, eines freien Parkplatzes mit Berücksichtigung für Dauerparker.
+        /// </summary>
+        /// <param name="isDauerparker">Ist der Parker ein Dauerparker?</param>
+        /// <returns>Die ermittelte ParkplatzID.</returns>
+        private int GetAvailableParkplatz(bool isDauerparker)
+        {
+            if (isDauerparker)
+            {
+                // Hier werden aufgrund der Datentabelle automatisch Dauerparkplätze preferiert, da diese in der Tabelle als erstes vorkommen.
+                return _context.Parkplatz
+                               .Where(o => o.ParkscheinId == null) // Wo keine ParkscheinId hinterlegt ist.
+                               .Select(o => o.Id) // Nur IDs heraussuchen, die auf das Kriterium oben passen.
+                               .First(); // Das erste Ergebnis.
+            }
+
+            return _context.Parkplatz
+                           .Where(o => o.IstDauerparkplatz == false) // Kein Dauerparkplatz.
+                           .Where(o => o.ParkscheinId == null) // Wo keine ParkscheinId hinterlegt ist.
+                           .Select(o => o.Id)
+                           .First();
         }
     }
 }
