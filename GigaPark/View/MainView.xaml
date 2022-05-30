@@ -37,9 +37,15 @@
                            Text="Dieser Text wird bei Programmstart ersetzt"
                            Margin="40" />
 
+                <Label Content="Kennzeichen" Width="200"/>
+                <TextBox x:Name="EntranceLicensePlateTextBox"
+                         Width="200"/>
                 <Button x:Name="EntranceButton"
                         Content="Parkschein drucken"
                         Margin="40 20 40 0" Click="EntranceButton_Click" />
+                <Button x:Name="EntranceButtonLongterm"
+                        Content="Parkschein drucken (Dauerparker)"
+                        Margin="40 20 40 0" Click="EntranceButtonLongterm_Click" />
 
             </StackPanel>
         </StackPanel>
@@ -59,14 +65,15 @@
                            Foreground="#000000"
                            Text="Dieser Text wird bei Programmstart ersetzt"
                            Margin="40" />
-
+                <Label Content="Kennzeichen" Width="200"/>
+                <TextBox x:Name="ExitLicensePlateTextBox"
+                         Width="200"/>
                 <Button x:Name="ExitButton"
                         Content="Ausfahrt"
                         Margin="40 20 40 0" Click="ExitButton_Click" />
-
-                <Button x:Name="ExitButtonLongtermCustomer"
-                        Content="Dauerparker Ausfahrt"
-                        Margin="40 20 40 0" Click="ExitButtonLongtermCustomer_Click" />
+                <Button x:Name="ExitButtonLongterm"
+                        Content="Ausfahrt (Dauerparker)"
+                        Margin="40 20 40 0" Click="ExitButtonLongterm_Click" />
             </StackPanel>
         </StackPanel>
         <!-- #endregion -->

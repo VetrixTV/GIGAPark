@@ -10,19 +10,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GigaPark.View"
         mc:Ignorable="d"
-        Title="DatabaseView" Height="800" Width="1200">
+        Title="DatabaseView" Height="850" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="600"/>
-            <ColumnDefinition Width="600"/>
+            <ColumnDefinition Width="600" />
+            <ColumnDefinition Width="600" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="800" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
         <DataGrid x:Name="ParkplatzGrid"
                   AutoGenerateColumns="False"
                   Grid.Column="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Id}" Width="SizeToHeader" Header="ID" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding IstDauerparkplatz}" Width="SizeToHeader" Header="Dauerparkplatz?" IsReadOnly="True"/>
-                <DataGridTextColumn Binding="{Binding ParkscheinId}" Width="SizeToHeader" Header="ParkscheinID" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding IstDauerparkplatz}" Width="SizeToHeader" Header="Dauerparkplatz?"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding ParkscheinId}" Width="SizeToHeader" Header="ParkscheinID"
+                                    IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="ParkscheinGrid"
@@ -30,13 +36,22 @@
                   Grid.Column="0">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Id}" Width="SizeToHeader" Header="ID" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Kennzeichen}" Width="SizeToHeader" Header="Kennzeichen" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding Kennzeichen}" Width="SizeToHeader" Header="Kennzeichen"
+                                    IsReadOnly="True" />
                 <DataGridTextColumn Binding="{Binding Kosten}" Width="SizeToHeader" Header="Kosten" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Einfahrt}" Width="SizeToHeader" Header="Einfahrtszeitpunkt" IsReadOnly="True"/>
-                <DataGridTextColumn Binding="{Binding Ausfahrt}" Width="SizeToHeader" Header="Ausfahrtszeitpunkt" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding IstDauerparker}" Width="SizeToHeader" Header="Dauerparker?" IsReadOnly="True"/>
-                <DataGridTextColumn Binding="{Binding ParkplatzId}" Width="SizeToHeader" Header="Parkplatz" IsReadOnly="True"/>
+                <DataGridTextColumn Binding="{Binding Einfahrt}" Width="SizeToHeader" Header="Einfahrtszeitpunkt"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding Ausfahrt}" Width="SizeToHeader" Header="Ausfahrtszeitpunkt"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding IstDauerparker}" Width="SizeToHeader" Header="Dauerparker?"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding ParkplatzId}" Width="SizeToHeader" Header="Parkplatz"
+                                    IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
+        <Button x:Name="ResetButton"
+                Grid.Row="1"
+                Grid.Column="0"
+                Content="RESET DATABASE" Click="ResetButton_Click" />
     </Grid>
 </Window>

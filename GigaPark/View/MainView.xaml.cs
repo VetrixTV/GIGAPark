@@ -70,7 +70,13 @@ namespace GigaPark.View
         /// <param name="e"></param>
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
-            EntranceDisplay.Text = _parkhouseService.DriveIn("OSWD99");
+            // Sind mindestens 5 Parkplätze frei?
+            if (_parkhouseService.IsSpaceAvailable())
+            {
+                EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+            }
+
+            EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text);
         }
 
         /// <summary>
@@ -80,15 +86,15 @@ namespace GigaPark.View
         /// <param name="e"></param>
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text);
         }
 
         /// <summary>
-        ///     Behandelt die Interaktion mit dem Button "ExitButtonLongtermCustomer".
+        ///     Behandelt die Interaktion mit dem Button "ExitButtonLongterm".
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ExitButtonLongtermCustomer_Click(object sender, RoutedEventArgs e)
+        private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -100,8 +106,24 @@ namespace GigaPark.View
         /// <param name="e"></param>
         private void ShowDatabaseButton_Click(object sender, RoutedEventArgs e)
         {
-            DatabaseView dbView = new(_context);
+            DatabaseView dbView = new(_context, _parkhouseService);
             dbView.Show();
+        }
+
+        /// <summary>
+        ///     Behandelt die Interaktion mit dem Button "EntranceButtonLongterm"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EntranceButtonLongterm_Click(object sender, RoutedEventArgs e)
+        {
+            // Sind mindestens 5 Parkplätze frei?
+            if (_parkhouseService.IsSpaceAvailable())
+            {
+                EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+            }
+
+            EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text, true);
         }
     }
 }

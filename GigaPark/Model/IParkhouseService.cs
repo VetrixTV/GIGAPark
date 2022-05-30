@@ -36,5 +36,10 @@ namespace GigaPark.Model
         /// </summary>
         /// <returns>Die genaue Anzahl, wie viele Parkplätze frei sind.</returns>
         int GetFreeSpaces();
+
+        /// <summary>
+        ///     Setzt die Datenbank auf den Standard zurück.
+        /// </summary>
+        void ResetDatabase();
     }
 }

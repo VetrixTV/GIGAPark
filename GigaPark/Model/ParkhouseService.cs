@@ -45,12 +45,6 @@ namespace GigaPark.Model
         /// <param name="isDauerparker">Ist der Parker ein Dauerparker?</param>
         public string DriveIn(string licensePlate, bool isDauerparker = false)
         {
-            // Sind mindestens 5 Parkplätze frei?
-            if (_context.Parkplatz.Count(o => o.ParkscheinId == null) < 5)
-            {
-                return ":(\nAktuell sind keine Parkplätze frei.";
-            }
-
             int parkId = GetAvailableParkplatz(isDauerparker);
 
             // Eintrag in die Parkscheintabelle hinzufügen.
@@ -96,7 +90,7 @@ namespace GigaPark.Model
         /// <returns>true, wenn mindestens 5 Parkplätze frei sind, sonst false.</returns>
         public bool IsSpaceAvailable()
         {
-            throw new NotImplementedException();
+            return _context.Parkplatz.Count(o => o.ParkscheinId == null) < 5;
         }
 
         /// <summary>
@@ -105,7 +99,21 @@ namespace GigaPark.Model
         /// <returns>Die genaue Anzahl, wie viele Parkplätze frei sind.</returns>
         public int GetFreeSpaces()
         {
-            throw new NotImplementedException();
+            return _context.Parkplatz.Count(o => o.ParkscheinId == null);
+        }
+
+        /// <summary>
+        ///     Setzt die Datenbank auf den Standard zurück.
+        /// </summary>
+        public void ResetDatabase()
+        {
+            // Alle Datensätze entfernen.
+            _context.Parkplatz.RemoveRange(_context.Parkplatz);
+            _context.Parkschein.RemoveRange(_context.Parkschein);
+
+            _context.SaveChanges();
+
+            Prepare();
         }
 
         /// <summary>
