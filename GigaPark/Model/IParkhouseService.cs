@@ -29,7 +29,7 @@ namespace GigaPark.Model
         ///     Ermittelt, ob genug Parkplätze im Parkhaus noch frei sind.
         /// </summary>
         /// <returns>true, wenn mindestens 5 Parkplätze frei sind, sonst false.</returns>
-        bool IsSpaceAvailable();
+        bool IsSpaceAvailable(bool isDauerparker);
 
         /// <summary>
         ///     Ermittelt, wie viele Parkplätze im Parkhaus noch frei sind.

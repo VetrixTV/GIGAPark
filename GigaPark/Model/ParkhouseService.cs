@@ -88,9 +88,9 @@ namespace GigaPark.Model
         ///     Ermittelt, ob genug Parkplätze im Parkhaus noch frei sind.
         /// </summary>
         /// <returns>true, wenn mindestens 5 Parkplätze frei sind, sonst false.</returns>
-        public bool IsSpaceAvailable()
+        public bool IsSpaceAvailable(bool isDauerparker)
         {
-            return _context.Parkplatz.Count(o => o.ParkscheinId == null) < 5;
+            return _context.Parkplatz.Count(o => o.ParkscheinId == null && o.IstDauerparkplatz == isDauerparker) >= 5;
         }
 
         /// <summary>

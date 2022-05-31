@@ -31,11 +31,18 @@
                 <Label Content="EINFAHRT"
                        Margin="20" />
                 <TextBlock x:Name="EntranceDisplay"
-                           Height="100"
+                           Height="30"
                            FontSize="22"
                            Foreground="#000000"
                            Text="Dieser Text wird bei Programmstart ersetzt"
-                           Margin="40" />
+                           Margin="20 20 20 20" />
+                <TextBlock x:Name="FreeParkinglots"
+                           Height="30"
+                           FontSize="22"
+                           Foreground="#000000"
+                           Text="80 Freie Plätze"
+                           Margin="40"
+                           TextAlignment="Center"/>
 
                 <Label Content="Kennzeichen" Width="200"/>
                 <TextBox x:Name="EntranceLicensePlateTextBox"
@@ -64,8 +71,9 @@
                            FontSize="22"
                            Foreground="#000000"
                            Text="Dieser Text wird bei Programmstart ersetzt"
-                           Margin="40" />
-                <Label Content="Kennzeichen" Width="200"/>
+                           Margin="40 20 40 40" />
+                <Label Content="Kennzeichen" Width="200"
+                       Margin="0 20 0 0"/>
                 <TextBox x:Name="ExitLicensePlateTextBox"
                          Width="200"/>
                 <Button x:Name="ExitButton"

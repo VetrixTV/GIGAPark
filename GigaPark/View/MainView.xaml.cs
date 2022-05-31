@@ -44,6 +44,18 @@ namespace GigaPark.View
             ExitDisplay.Text = "Bis Baldrian!";
 
             InitializeDatabase();
+            UpdateFreeParkinLotText();
+        }
+
+        private void UpdateFreeParkinLotText()
+        {
+            if (_parkhouseService.IsSpaceAvailable(false))
+            {
+                FreeParkinglots.Text = (_parkhouseService.GetFreeSpaces() - 4) + " freie Plätze";
+            } else
+            {
+                FreeParkinglots.Text = "Es gibt keine verfügbaren Plätze";
+            }
         }
 
         /// <summary>
@@ -71,12 +83,14 @@ namespace GigaPark.View
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
             // Sind mindestens 5 Parkplätze frei?
-            if (_parkhouseService.IsSpaceAvailable())
+            if (!_parkhouseService.IsSpaceAvailable(false))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+                return;
             }
 
             EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text);
+            UpdateFreeParkinLotText();
         }
 
         /// <summary>
@@ -87,6 +101,7 @@ namespace GigaPark.View
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text);
+            UpdateFreeParkinLotText();
         }
 
         /// <summary>
@@ -97,6 +112,7 @@ namespace GigaPark.View
         private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+            UpdateFreeParkinLotText();
         }
 
         /// <summary>
@@ -118,12 +134,14 @@ namespace GigaPark.View
         private void EntranceButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             // Sind mindestens 5 Parkplätze frei?
-            if (_parkhouseService.IsSpaceAvailable())
+            if (!_parkhouseService.IsSpaceAvailable(true))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+                return;
             }
 
             EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text, true);
+            UpdateFreeParkinLotText();
         }
     }
 }
