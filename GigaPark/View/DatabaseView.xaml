@@ -25,9 +25,9 @@
                   Grid.Column="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Id}" Width="SizeToHeader" Header="ID" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding IstDauerparkplatz}" Width="SizeToHeader" Header="Dauerparkplatz?"
+                <DataGridTextColumn Binding="{Binding IsSpotForPermanentParkers}" Width="SizeToHeader" Header="Dauerparkplatz?"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding ParkscheinId}" Width="SizeToHeader" Header="ParkscheinID"
+                <DataGridTextColumn Binding="{Binding TicketId}" Width="SizeToHeader" Header="ParkscheinID"
                                     IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
@@ -36,16 +36,16 @@
                   Grid.Column="0">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Id}" Width="SizeToHeader" Header="ID" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Kennzeichen}" Width="SizeToHeader" Header="Kennzeichen"
+                <DataGridTextColumn Binding="{Binding LicensePlate}" Width="SizeToHeader" Header="LicensePlate"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Kosten}" Width="SizeToHeader" Header="Kosten" IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Einfahrt}" Width="SizeToHeader" Header="Einfahrtszeitpunkt"
+                <DataGridTextColumn Binding="{Binding Costs}" Width="SizeToHeader" Header="Costs" IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding DriveInDate}" Width="SizeToHeader" Header="Einfahrtszeitpunkt"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding Ausfahrt}" Width="SizeToHeader" Header="Ausfahrtszeitpunkt"
+                <DataGridTextColumn Binding="{Binding DriveOutDate}" Width="SizeToHeader" Header="Ausfahrtszeitpunkt"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding IstDauerparker}" Width="SizeToHeader" Header="Dauerparker?"
+                <DataGridTextColumn Binding="{Binding IsPermanentParker}" Width="SizeToHeader" Header="Dauerparker?"
                                     IsReadOnly="True" />
-                <DataGridTextColumn Binding="{Binding ParkplatzId}" Width="SizeToHeader" Header="Parkplatz"
+                <DataGridTextColumn Binding="{Binding SpotId}" Width="SizeToHeader" Header="ParkingSpot"
                                     IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>

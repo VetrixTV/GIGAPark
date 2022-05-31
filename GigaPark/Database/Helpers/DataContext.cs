@@ -1,16 +1,8 @@
-﻿/*
- * DataContext.cs
- * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
- */
-
-using GigaPark.Database.Entities;
+﻿using GigaPark.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GigaPark.Database.Helpers
 {
-    /// <summary>
-    ///     Klasse für das Verwalten von Datenbankkontexten.
-    /// </summary>
     public class DataContext : DbContext
     {
         /// <summary>
@@ -40,21 +32,13 @@ namespace GigaPark.Database.Helpers
         /// </param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=parkhaus.db");
+            optionsBuilder.UseSqlite("Data Source=parkhouse.db");
         }
 
-        /// <summary>
-        ///     Gibt die <see cref="DbSet{TEntity}" />-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die
-        ///     Tabelle "Parkplatz" zu parsen.
-        /// </summary>
 #pragma warning disable CS8618
-        public DbSet<Parkplatz> Parkplatz { get; set; }
+        public DbSet<ParkingSpot> Spots { get; set; }
 
-        /// <summary>
-        ///     Gibt die <see cref="DbSet{TEntity}" />-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die
-        ///     Tabelle "Parkschein" zu parsen.
-        /// </summary>
-        public DbSet<Parkschein> Parkschein { get; set; }
+        public DbSet<ParkingTicket> Tickets { get; set; }
 #pragma warning restore CS8618
     }
 }

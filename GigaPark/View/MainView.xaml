@@ -1,9 +1,4 @@
-﻿<!--
-    MainView.xaml
-    Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
-    -->
-    
-<!-- ReSharper disable once Xaml.RedundantNamespaceAlias -->
+﻿<!-- ReSharper disable once Xaml.RedundantNamespaceAlias -->
 <Window x:Class="GigaPark.View.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -48,10 +43,10 @@
                 <TextBox x:Name="EntranceLicensePlateTextBox"
                          Width="200"/>
                 <Button x:Name="EntranceButton"
-                        Content="Parkschein drucken"
+                        Content="Tickets drucken"
                         Margin="40 20 40 0" Click="EntranceButton_Click" />
                 <Button x:Name="EntranceButtonLongterm"
-                        Content="Parkschein drucken (Dauerparker)"
+                        Content="Tickets drucken (Dauerparker)"
                         Margin="40 20 40 0" Click="EntranceButtonLongterm_Click" />
 
             </StackPanel>
@@ -77,10 +72,10 @@
                 <TextBox x:Name="ExitLicensePlateTextBox"
                          Width="200"/>
                 <Button x:Name="ExitButton"
-                        Content="Ausfahrt"
+                        Content="DriveOutDate"
                         Margin="40 20 40 0" Click="ExitButton_Click" />
                 <Button x:Name="ExitButtonLongterm"
-                        Content="Ausfahrt (Dauerparker)"
+                        Content="DriveOutDate (Dauerparker)"
                         Margin="40 20 40 0" Click="ExitButtonLongterm_Click" />
             </StackPanel>
         </StackPanel>
