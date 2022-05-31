@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GigaPark.Database.Helpers
 {
+    /// <summary>
+    ///     Stellt den Kontext zur Datenbank bereit. <br></br> Diese Klasse erbt von der <see cref="DbContext" />-Klasse, die
+    ///     eine aktive Instanz einer Datenbankverbindung repräsentiert.
+    /// </summary>
     public class DataContext : DbContext
     {
         /// <summary>
@@ -32,12 +36,22 @@ namespace GigaPark.Database.Helpers
         /// </param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            /*
+             * SQLite Datenbank verwenden.
+             * Die Datenbankdatei wird im Ordner der Executable erstellt und ist demnach lokal.
+             */
             optionsBuilder.UseSqlite("Data Source=parkhouse.db");
         }
 
 #pragma warning disable CS8618
+        /// <summary>
+        ///     Gibt den Datenbanksatz für die Parkplätze an oder legt diesen fest.
+        /// </summary>
         public DbSet<ParkingSpot> Spots { get; set; }
 
+        /// <summary>
+        ///     Gibt den Datenbanksatz für die Parkscheine an oder legt diesen fest.
+        /// </summary>
         public DbSet<ParkingTicket> Tickets { get; set; }
 #pragma warning restore CS8618
     }

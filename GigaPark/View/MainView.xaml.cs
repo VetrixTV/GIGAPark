@@ -17,7 +17,7 @@ namespace GigaPark.View
 
             ResizeMode = ResizeMode.NoResize;
 
-            _dataService = new DataService(Settings.Default.MaxParkplatzCount);
+            _dataService = new DataService(Settings.Default.MaxSpotCount);
             _parkhouseService = new ParkhouseService(_dataService);
 
             EntranceDisplay.Text = "Willkommen im GigaPark!";
