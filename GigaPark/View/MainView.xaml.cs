@@ -24,36 +24,55 @@ namespace GigaPark.View
             ExitDisplay.Text = "Bis Baldrian!";
 
             _dataService.InitializeDatabase();
+            UpdateFreeParkinLotText();
+        }
+
+        private void UpdateFreeParkinLotText()
+        {
+            if (_parkhouseService.AreSpotsAvailable(false))
+            {
+                FreeParkinglots.Text = (_parkhouseService.GetFreeSpaces() - 4) + " freie Plätze";
+            } else
+            {
+                FreeParkinglots.Text = "Es gibt keine verfügbaren Plätze";
+            }
         }
 
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_parkhouseService.AreSpotsAvailable())
+            if (_parkhouseService.AreSpotsAvailable(false))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+                return;
             }
 
             EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text);
+            UpdateFreeParkinLotText();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text);
+            UpdateFreeParkinLotText();
         }
 
         private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+            UpdateFreeParkinLotText();
         }
 
         private void EntranceButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
-            if (_parkhouseService.AreSpotsAvailable())
+            // Sind mindestens 5 Parkplätze frei?
+            if (!_parkhouseService.AreSpotsAvailable(true))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+                return;
             }
 
             EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text, true);
+            UpdateFreeParkinLotText();
         }
 
         private void ShowDatabaseButton_Click(object sender, RoutedEventArgs e)

@@ -6,7 +6,7 @@
 
         string DriveOut(string licensePlate);
 
-        bool AreSpotsAvailable();
+        bool AreSpotsAvailable(bool isPermanentParker);
 
         int GetFreeSpots();
     }

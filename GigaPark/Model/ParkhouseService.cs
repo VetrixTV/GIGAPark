@@ -36,9 +36,9 @@ namespace GigaPark.Model
             throw new NotImplementedException();
         }
 
-        public bool AreSpotsAvailable()
+        public bool AreSpotsAvailable(bool isPermanentParker)
         {
-            return _dataService.AreSpotsAvailable();
+            return _context.Parkplatz.Count(o => o.ParkscheinId == null && o.IstDauerparkplatz == isPermanentParker) >= 5;
         }
 
         public int GetFreeSpots()
@@ -46,9 +46,9 @@ namespace GigaPark.Model
             return _dataService.GetFreeSpotCount();
         }
 
-        private int GetAvailableSpot(bool isDauerparker)
+        private int GetAvailableSpot(bool isPermanentParker)
         {
-            return _dataService.GetAvailableSpot(isDauerparker);
+            return _dataService.GetAvailableSpot(isPermanentParker);
         }
     }
 }
