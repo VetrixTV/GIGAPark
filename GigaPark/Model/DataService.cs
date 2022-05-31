@@ -132,10 +132,10 @@ namespace GigaPark.Model
                                          .ToList());
             _context.SaveChanges();
 
-            CreateParkplatzTable();
+            CreateParkingLots();
         }
 
-        private void CreateParkplatzTable()
+        private void CreateParkingLots()
         {
             var toInsert = new List<ParkingSpot>(_maxParkplatzCount);
 
