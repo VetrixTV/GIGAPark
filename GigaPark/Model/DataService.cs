@@ -75,9 +75,9 @@ namespace GigaPark.Model
                                               .First();
 
             parkingSpot.TicketId = _context.Tickets
-                                               .Where(o => o.SpotId == parkplatzIdToUpdate)
-                                               .Select(o => o.Id)
-                                               .First();
+                                           .Where(o => o.SpotId == parkplatzIdToUpdate)
+                                           .Select(o => o.Id)
+                                           .First();
             _context.SaveChanges();
         }
 
@@ -98,9 +98,10 @@ namespace GigaPark.Model
                            .First();
         }
 
-        public bool AreSpotsAvailable()
+        public bool AreSpotsAvailable(bool isPermanentParker)
         {
-            return GetFreeSpotCount() >= 5;
+            // TODO: Dauerparker können überall parken.
+            return GetFreeSpotCountFor(isPermanentParker) >= 5;
         }
 
         public int GetFreeSpotCount()
@@ -116,6 +117,11 @@ namespace GigaPark.Model
         public IEnumerable<ParkingTicket> GetTickets()
         {
             return _context.Tickets.Local.ToObservableCollection();
+        }
+
+        private int GetFreeSpotCountFor(bool parkingType)
+        {
+            return _context.Spots.Count(o => o.TicketId == null && o.IsSpotForPermanentParkers == parkingType);
         }
 
         private void Prepare()
@@ -143,7 +149,8 @@ namespace GigaPark.Model
             {
                 toInsert.Add(new ParkingSpot
                 {
-                    IsSpotForPermanentParkers = i < 40, // Nur die ersten 40 Parkplätze, sind für Dauerparker reserviert.
+                    IsSpotForPermanentParkers =
+                        i < 40, // Nur die ersten 40 Parkplätze, sind für Dauerparker reserviert.
                     TicketId = null
                 });
             }

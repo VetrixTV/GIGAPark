@@ -19,7 +19,7 @@ namespace GigaPark.Model
 
         int GetAvailableSpot(bool isPermanentParker);
 
-        bool AreSpotsAvailable();
+        bool AreSpotsAvailable(bool isPermanentParker);
 
         int GetFreeSpotCount();
 

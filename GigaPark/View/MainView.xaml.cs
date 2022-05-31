@@ -31,8 +31,9 @@ namespace GigaPark.View
         {
             if (_parkhouseService.AreSpotsAvailable(false))
             {
-                FreeParkinglots.Text = (_parkhouseService.GetFreeSpaces() - 4) + " freie Plätze";
-            } else
+                FreeParkinglots.Text = (_parkhouseService.GetFreeSpots() - 4) + " freie Plätze";
+            }
+            else
             {
                 FreeParkinglots.Text = "Es gibt keine verfügbaren Plätze";
             }
@@ -40,7 +41,7 @@ namespace GigaPark.View
 
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_parkhouseService.AreSpotsAvailable(false))
+            if (!_parkhouseService.AreSpotsAvailable(false))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
                 return;

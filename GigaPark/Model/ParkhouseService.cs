@@ -38,7 +38,7 @@ namespace GigaPark.Model
 
         public bool AreSpotsAvailable(bool isPermanentParker)
         {
-            return _context.Parkplatz.Count(o => o.ParkscheinId == null && o.IstDauerparkplatz == isPermanentParker) >= 5;
+            return _dataService.AreSpotsAvailable(isPermanentParker);
         }
 
         public int GetFreeSpots()
