@@ -60,8 +60,29 @@ namespace GigaPark.Model
         /// </exception>
         string DriveOut(string licensePlate, bool isPermanentParker);
 
+        /// <summary>
+        ///     Ermittelt, ob genug Parkplätze, für die Einfahrt in das Parkhaus, verfügbar sind.
+        ///     Dabei wird Unterschieden, ob es sich bei dem Einfahrenden um einen Dauerparker 
+        ///     handelt oder nicht. <br /><br />
+        ///     Richtige Nutzung:<br />
+        ///     <c>
+        ///         _a.AreSpotsAvailable(true);<br />
+        ///     </c>
+        ///     Wahrheitswerte können nicht <c>null</c> sein.
+        /// </summary>
+        /// <param name="isPermanentParker">
+        ///     Ist der Einfahrende ein Dauerparker?
+        /// </param>
+        /// <returns>
+        ///     Der Wahrheitswert, ob genug Parkplätze vorhanden sind. <c>true</c>, wenn dies zutrifft, 
+        ///     <c>false</c> wenn nicht.
+        /// </returns>
         bool AreSpotsAvailable(bool isPermanentParker);
 
+        /// <summary>
+        ///     Ermittelt die genaue Anzahl der freien Parkplätze im Parkhaus.
+        /// </summary>
+        /// <returns>Die genaue Anzahl der freien Parkplätze im Parkhaus.</returns>
         int GetFreeSpots();
     }
 }

@@ -116,16 +116,42 @@ namespace GigaPark.Model
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        ///     Ermittelt, ob genug Parkplätze, für die Einfahrt in das Parkhaus, verfügbar sind.
+        ///     Dabei wird Unterschieden, ob es sich bei dem Einfahrenden um einen Dauerparker 
+        ///     handelt oder nicht. <br /><br />
+        ///     Richtige Nutzung:<br />
+        ///     <c>
+        ///         _a.AreSpotsAvailable(true);<br />
+        ///     </c>
+        ///     Wahrheitswerte können nicht <c>null</c> sein.
+        /// </summary>
+        /// <param name="isPermanentParker">
+        ///     Ist der Einfahrende ein Dauerparker?
+        /// </param>
+        /// <returns>
+        ///     Der Wahrheitswert, ob genug Parkplätze vorhanden sind. <c>true</c>, wenn dies zutrifft, 
+        ///     <c>false</c> wenn nicht.
+        /// </returns>
         public bool AreSpotsAvailable(bool isPermanentParker)
         {
             return _dataService.AreSpotsAvailable(isPermanentParker);
         }
 
+        /// <summary>
+        ///     Ermittelt die genaue Anzahl der freien Parkplätze im Parkhaus.
+        /// </summary>
+        /// <returns>Die genaue Anzahl der freien Parkplätze im Parkhaus.</returns>
         public int GetFreeSpots()
         {
             return _dataService.GetFreeSpotCount();
         }
 
+        /// <summary>
+        ///     Ermittelt den ersten freien Parkplatz für das einfahrende Fahrzeug.
+        /// </summary>
+        /// <param name="isPermanentParker">Ist das einfahrende Fahrzeug ein Dauerparker?</param>
+        /// <returns>Die ID des ermittelten Parkplatzes.</returns>
         private int GetAvailableSpot(bool isPermanentParker)
         {
             return _dataService.GetAvailableSpot(isPermanentParker);
