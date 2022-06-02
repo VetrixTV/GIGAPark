@@ -3,10 +3,19 @@ using GigaPark.Database.Entities;
 
 namespace GigaPark.Model
 {
+    /// <summary>
+    ///     Schnittstelle für die Verwaltung von Datenzugriffen.
+    /// </summary>
     public interface IDataService
     {
+        /// <summary>
+        ///     Initialisiert die lokale Datenbank.
+        /// </summary>
         void InitializeDatabase();
 
+        /// <summary>
+        ///     Setzt die Datenbank auf Werkseinstellung zurück.
+        /// </summary>
         void ResetDatabase();
 
         void InsertEntry(ParkingSpot? spot = null!,

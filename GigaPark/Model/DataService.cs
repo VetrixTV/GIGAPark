@@ -6,34 +6,64 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GigaPark.Model
 {
+    /// <summary>
+    ///     Klasse für das Verwalten von Datenzugriffen. Diese Klasse implementiert die <see cref="IDataService"/>-Schnittstelle.
+    /// </summary>
     public class DataService : IDataService
     {
+        /// <summary>
+        ///     Maximale Anzahl an freien Parkplätzen.
+        /// </summary>
         private readonly int _maxParkplatzCount;
+
+        /// <summary>
+        ///     Der Datenbankkontext.
+        /// </summary>
         private readonly DataContext _context;
 
+        /// <summary>
+        ///     Initialisiert eine neue Instanz der <see cref="DataService"/>-Klasse.
+        /// </summary>
+        /// <param name="maxParkplatzCount">Die maximale Anzahl an Parkplätzen.</param>
         public DataService(int maxParkplatzCount)
         {
             _maxParkplatzCount = maxParkplatzCount;
             _context = new DataContext();
         }
 
+        /// <summary>
+        ///     Initialisiert die lokale Datenbank.
+        /// </summary>
         public void InitializeDatabase()
         {
+            // Datenbank erstellen, überprüfen und Aufrufen.
             _context.Database.EnsureCreated();
 
+            /*
+             * Daten in die Kontextlisten laden.
+             * Durch den DataService werden nur die Listen bearbeitet.
+             * Das ermöglicht schnellere Zugriffe auf die Daten.
+             * Diese Daten werden manuell dann in die .db-Datei geschrieben.
+             */
             _context.Spots.Load();
             _context.Tickets.Load();
 
+            // Vorbereitung vor Start der Anwendung.
             Prepare();
         }
 
+        /// <summary>
+        ///     Setzt die Datenbank auf Werkseinstellung zurück.
+        /// </summary>
         public void ResetDatabase()
         {
+            // Daten löschen.
             _context.Spots.RemoveRange(_context.Spots);
             _context.Tickets.RemoveRange(_context.Tickets);
 
             _context.SaveChanges();
 
+            // Vorbereitung der Datenbank.
             Prepare();
         }
 
@@ -119,11 +149,21 @@ namespace GigaPark.Model
             return _context.Tickets.Local.ToObservableCollection();
         }
 
+        /// <summary>
+        ///     Ermittelt die freien Parkplätze für den Parktypen (Dauer-/Einzelparker).
+        /// </summary>
+        /// <param name="parkingType">Ist das einfahrende Fahrzeug ein Dauerparker?</param>
+        /// <returns>Die genaue Anzahl an freien Parkplätzen, für den Parktypen.</returns>
         private int GetFreeSpotCountFor(bool parkingType)
         {
             return _context.Spots.Count(o => o.TicketId == null && o.IsSpotForPermanentParkers == parkingType);
         }
 
+        /// <summary>
+        ///     Überprüft die aktuelle Instanz der Datenbank. <br />
+        ///     Wenn die Datentabelle "ParkingSpot" nicht den Anforderungen entspricht 
+        ///     oder nicht existiert wird diese Tabelle gelöscht und/oder neu erstellt.
+        /// </summary>
         private void Prepare()
         {
             int entryCount = _context.Spots.Count();
@@ -141,6 +181,9 @@ namespace GigaPark.Model
             CreateParkingLots();
         }
 
+        /// <summary>
+        ///     Erstellt und Commited die Standarddaten für die ParkingSpot-Tabelle.
+        /// </summary>
         private void CreateParkingLots()
         {
             var toInsert = new List<ParkingSpot>(_maxParkplatzCount);
