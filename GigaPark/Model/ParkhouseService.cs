@@ -112,6 +112,12 @@ namespace GigaPark.Model
             }
 
             // TODO DriveOut Methode.
+            /*
+            
+                Die ParkplatzID im Eintrag des Parkscheins löschen.
+                Die ParkscheinID im Eintrag des Parkplatzes löschen.
+            
+            */
 
             throw new NotImplementedException();
         }
