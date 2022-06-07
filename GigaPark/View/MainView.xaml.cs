@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using GigaPark.Model;
 using GigaPark.Properties;
 
@@ -7,10 +6,19 @@ namespace GigaPark.View
 {
     public partial class MainView
     {
-        private readonly DataService _dataService;
+        /// <summary>
+        ///     Der Datenservice.
+        /// </summary>
+        private readonly IDataService _dataService;
 
-        private readonly ParkhouseService _parkhouseService;
+        /// <summary>
+        ///     Der Parkhausservice.
+        /// </summary>
+        private readonly IParkhouseService _parkhouseService;
 
+        /// <summary>
+        ///     Initialisiert eine neue Instanz der <see cref="MainView" />-Klasse.
+        /// </summary>
         public MainView()
         {
             InitializeComponent();
@@ -27,6 +35,9 @@ namespace GigaPark.View
             UpdateFreeParkinLotText();
         }
 
+        /// <summary>
+        ///     Aktualisiert die Anzeige mit den freien Parkplätzen.
+        /// </summary>
         private void UpdateFreeParkinLotText()
         {
             if (_parkhouseService.AreSpotsAvailable(false))
@@ -39,6 +50,9 @@ namespace GigaPark.View
             }
         }
 
+        /// <summary>
+        ///     Überprüft, ob das einfahrende Fahrzeug einfahren darf und setzt das Kennzeichen in der Datenbank.
+        /// </summary>
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
             if (!_parkhouseService.AreSpotsAvailable(false))
@@ -47,22 +61,13 @@ namespace GigaPark.View
                 return;
             }
 
-            EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text);
+            EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text, false);
             UpdateFreeParkinLotText();
         }
 
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text);
-            UpdateFreeParkinLotText();
-        }
-
-        private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-            UpdateFreeParkinLotText();
-        }
-
+        /// <summary>
+        ///     Überprüft, ob das einfahrende Fahrzeug einfahren darf und setzt das Kennzeichen in der Datenbank. (Dauerparker)
+        /// </summary>
         private void EntranceButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             // Sind mindestens 5 Parkplätze frei?
@@ -76,6 +81,27 @@ namespace GigaPark.View
             UpdateFreeParkinLotText();
         }
 
+        /// <summary>
+        ///     Entfernt das ausfahrende Fahrzeug aus der Datenbank (Parkplatz) und rechnet die Kosten ab.
+        /// </summary>
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, false);
+            UpdateFreeParkinLotText();
+        }
+
+        /// <summary>
+        ///     Entfernt das ausfahrende Fahrzeug aus der Datenbank (Parkplatz) und rechnet KEINE Kosten ab. (Dauerparker)
+        /// </summary>
+        private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
+        {
+            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, true);
+            UpdateFreeParkinLotText();
+        }
+
+        /// <summary>
+        ///     Zeigt die Datenbank an.
+        /// </summary>
         private void ShowDatabaseButton_Click(object sender, RoutedEventArgs e)
         {
             DatabaseView dbView = new(_dataService);
