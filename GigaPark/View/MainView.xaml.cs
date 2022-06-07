@@ -55,6 +55,7 @@ namespace GigaPark.View
         /// </summary>
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Redundanz ausmerzen durch DeepEqual-Verfahren. (Methode in ParkhausService -> DatenService).
             if (!_parkhouseService.AreSpotsAvailable(false))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
@@ -71,6 +72,7 @@ namespace GigaPark.View
         private void EntranceButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             // Sind mindestens 5 Parkplätze frei?
+            // TODO: Redundanz ausmerzen durch DeepEqual-Verfahren. (Methode in ParkhausService -> DatenService).
             if (!_parkhouseService.AreSpotsAvailable(true))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
@@ -86,6 +88,7 @@ namespace GigaPark.View
         /// </summary>
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Der Eintrag soll nicht gelöscht werden, sondern die Parkplatz ID auf null setzen.
             ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, false);
             UpdateFreeParkinLotText();
         }
@@ -95,6 +98,7 @@ namespace GigaPark.View
         /// </summary>
         private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Der Eintrag soll nicht gelöscht werden, sondern die Parkplatz ID auf null setzen.
             ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, true);
             UpdateFreeParkinLotText();
         }
