@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GigaPark.Database.Entities;
 using GigaPark.Database.Helpers;
@@ -92,7 +93,7 @@ namespace GigaPark.Model
         ///     Ein Objekt vom Typen <see cref="ParkingTicket" />, der in die Datenbank eingefügt werden soll.
         ///     (Optional)
         /// </param>
-        public void InsertEntry(ParkingSpot? spot = null!,
+        public int InsertEntry(ParkingSpot? spot = null!,
                                 ParkingTicket? ticket = null!)
         {
             if (spot != null)
@@ -102,6 +103,14 @@ namespace GigaPark.Model
 
             if (ticket != null)
             {
+                if (_context.Tickets
+                            .Any(o => o.LicensePlate == ticket.LicensePlate))
+                {
+                    ParkingTicket ticketToRemove = _context.Tickets.First(o => o.LicensePlate == ticket.LicensePlate);
+                    ClearSpot(ticketToRemove.SpotId);
+                    _context.Tickets.Remove(ticketToRemove);
+                    _context.SaveChanges();
+                }
                 _context.Tickets.Add(ticket);
             }
 
@@ -110,6 +119,8 @@ namespace GigaPark.Model
             {
                 _context.SaveChanges();
             }
+
+            return 0;
         }
 
         /// <summary>
@@ -138,8 +149,8 @@ namespace GigaPark.Model
         ///     Eine Auflistung von <see cref="ParkingTicket" /> , die in die Datenbank eingefügt werden sollen.
         ///     (Optional)
         /// </param>
-        public void BulkInsertEntry(IEnumerable<ParkingSpot>? spots = null!,
-                                    IEnumerable<ParkingTicket>? tickets = null!)
+        private void BulkInsertEntry(IEnumerable<ParkingSpot>? spots = null!,
+                                     IEnumerable<ParkingTicket>? tickets = null!)
         {
             if (spots != null)
             {
@@ -254,6 +265,52 @@ namespace GigaPark.Model
         }
 
         /// <summary>
+        ///     Entfernt die ParkplatzID aus dem Eintrag des Parkers.
+        /// </summary>
+        /// <param name="licensePlate">Das ausfahrende Fahrzeug.</param>
+        /// <param name="isPermanentParker">Ist das ausfahrende Fahrzeug ein Dauerparker?</param>
+        /// <returns>Die ID des zu leerenden Parkplatzes.</returns>
+        public int DeleteParker(string licensePlate, bool isPermanentParker)
+        {
+            // Methode nur ausführen, wenn das eingegebene Kennzeichen existiert.
+            if (!CheckForExistence(licensePlate))
+            {
+                return 0; // 0 kann keine ParkplatzID sein.
+            }
+
+            ParkingTicket ticket = _context.Tickets
+                                           .First(o => o.LicensePlate == licensePlate);
+
+            // Merken, da die ID noch gebraucht wird.
+            int toReturn = ticket.SpotId;
+
+            ticket.Costs = !isPermanentParker ? 3.99m : 0.00m;
+            ticket.DriveOutDate = DateTime.Now;
+            ticket.SpotId = -1;
+            _context.SaveChanges();
+
+            return toReturn;
+        }
+
+        /// <summary>
+        ///     Entfernt das Kennzeichen des Parkplatzes.
+        /// </summary>
+        /// <param name="spotToClear">Der Parkplatz, dessen ParkscheinID entfernt werden soll.</param>
+        public void ClearSpot(int spotToClear)
+        {
+            if (!CheckForExistence(spotToClear))
+            {
+                return;
+            }
+
+            ParkingSpot spot = _context.Spots
+                                       .First(o => o.Id == spotToClear);
+
+            spot.TicketId = null;
+            _context.SaveChanges();
+        }
+
+        /// <summary>
         ///     Ermittelt die freien Parkplätze für den Parktypen (Dauer-/Einzelparker).
         /// </summary>
         /// <param name="parkingType">Ist das einfahrende Fahrzeug ein Dauerparker?</param>
@@ -307,6 +364,26 @@ namespace GigaPark.Model
             }
 
             BulkInsertEntry(toInsert);
+        }
+
+        /// <summary>
+        ///     Überprüft, ob dieses Kennzeichen in der Parkschein-Tabelle vorkommt.
+        /// </summary>
+        /// <param name="licensePlate">Das zu suchende Kennzeichen.</param>
+        /// <returns>true, wenn das Kennzeichen existiert.</returns>
+        private bool CheckForExistence(string licensePlate)
+        {
+            return Enumerable.Any(_context.Tickets, ticket => ticket.LicensePlate == licensePlate);
+        }
+
+        /// <summary>
+        ///     Überprüft, ob der Parkplatz in der Parkplatz-Tabelle vorkommt.
+        /// </summary>
+        /// <param name="spotId">Der zu suchende Parkplatz.</param>
+        /// <returns>true, wenn der Parkplatz existiert.</returns>
+        private bool CheckForExistence(int spotId)
+        {
+            return Enumerable.Any(_context.Spots, spot => spot.Id == spotId);
         }
     }
 }

@@ -88,7 +88,6 @@ namespace GigaPark.View
         /// </summary>
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Der Eintrag soll nicht gelöscht werden, sondern die Parkplatz ID auf null setzen.
             ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, false);
             UpdateFreeParkinLotText();
         }
@@ -98,7 +97,6 @@ namespace GigaPark.View
         /// </summary>
         private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Der Eintrag soll nicht gelöscht werden, sondern die Parkplatz ID auf null setzen.
             ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, true);
             UpdateFreeParkinLotText();
         }

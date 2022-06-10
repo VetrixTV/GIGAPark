@@ -43,38 +43,8 @@ namespace GigaPark.Model
         ///     Ein Objekt vom Typen <see cref="ParkingTicket" />, der in die Datenbank eingefügt werden soll.
         ///     (Optional)
         /// </param>
-        void InsertEntry(ParkingSpot? spot = null!,
+        int InsertEntry(ParkingSpot? spot = null!,
                          ParkingTicket? ticket = null!);
-
-        /// <summary>
-        ///     Fügt mehrere beliebige Einträge in die Datenbank ein. Es können mehrere Objekte eines jeweiligen Typs gleichzeitig
-        ///     eingefügt werden.<br />
-        ///     Angenommene Typen sind: <br />
-        ///     <see cref="IEnumerable{T}" />(<see cref="ParkingSpot" />) und <see cref="IEnumerable{T}" />(
-        ///     <see cref="ParkingTicket" />).<br /><br />
-        ///     Parameter <c>spots</c> und <c>tickest</c> sind optional. Sollte kein Parameter übergeben werden, passiert nichts.
-        ///     <br /><br />
-        ///     Korrekte Verwendungen:<br />
-        ///     Geschweifte Klammern um Typnamen werden durch Spitze Klammern ersetzt.<br />
-        ///     <c>
-        ///         _a.BulkInsertEntry(new List{ParkingSpot}() {}, new List{ParkingTicket}() {});<br />
-        ///         _a.BulkInsertEntry(tickets: new List{ParkingTicket}() {}, spots: new List{ParkingSpot}() {});<br />
-        ///         _a.BulkInsertEntry(new List{ParkingSpot}() {});<br />
-        ///         _a.BulkInsertEntry(tickets: new List{ParkingTicket}() {});<br />
-        ///         _a.BulkInsertEntry(); // Passiert nichts.<br />
-        ///     </c>
-        /// </summary>
-        /// <param name="spots">
-        ///     Eine Auflistung von <see cref="ParkingSpot" /> , die in die Datenbank eingefügt werden sollen.
-        ///     (Optional)
-        /// </param>
-        /// <param name="tickets">
-        ///     Eine Auflistung von <see cref="ParkingTicket" /> , die in die Datenbank eingefügt werden sollen.
-        ///     (Optional)
-        /// </param>
-        [Obsolete]
-        void BulkInsertEntry(IEnumerable<ParkingSpot>? spots = null!,
-                             IEnumerable<ParkingTicket>? tickets = null!);
 
         /// <summary>
         ///     Ermittelt den Eintrag der Parkplatztabelle, die geändert werden soll und fügt die dazugehörige ParkscheinID ein.
@@ -114,5 +84,19 @@ namespace GigaPark.Model
         /// </summary>
         /// <returns>Eine Collection der Parkschein-Tabelle.</returns>
         IEnumerable<ParkingTicket> GetTickets();
+
+        /// <summary>
+        ///     Entfernt die ParkplatzID aus dem Eintrag des Parkers.
+        /// </summary>
+        /// <param name="licensePlate">Das ausfahrende Fahrzeug.</param>
+        /// <param name="isPermanentParker">Ist das ausfahrende Fahrzeug ein Dauerparker?</param>
+        /// <returns>Die ID des zu leerenden Parkplatzes.</returns>
+        int DeleteParker(string licensePlate, bool isPermanentParker);
+
+        /// <summary>
+        ///     Entfernt das Kennzeichen des Parkplatzes.
+        /// </summary>
+        /// <param name="spotToClear">Der Parkplatz, dessen ParkscheinID entfernt werden soll.</param>
+        void ClearSpot(int spotToClear);
     }
 }

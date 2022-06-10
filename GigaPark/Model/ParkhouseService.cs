@@ -63,7 +63,7 @@ namespace GigaPark.Model
             // ID eines freien Parkplatzes ermitteln.
             int parkId = GetAvailableSpot(isPermanentParker);
 
-            _dataService.InsertEntry(ticket: new ParkingTicket
+            int insertReturnCode = _dataService.InsertEntry(ticket: new ParkingTicket
             {
                 LicensePlate = licensePlate,
                 Costs = 0.00m, // Kosten werden beim Ausfahren bestimmt.
@@ -73,6 +73,11 @@ namespace GigaPark.Model
                 SpotId = parkId
             });
 
+            if (insertReturnCode == 1)
+            {
+                return "Dauerparkerstatus geändert.";
+            }
+
             // Parkplatz in der Datenbank belegen.
             _dataService.UpdateParkingSpot(parkId);
 
@@ -80,7 +85,6 @@ namespace GigaPark.Model
         }
 
         /// <summary>
-        ///     // TODO Beschreibung DriveOut().<br />
         ///     Simuliert das Herausfahren eines Fahrzeugs aus dem Parkhaus.<br /><br />
         ///     Richtige Nutzung:<br />
         ///     <c>
@@ -103,7 +107,6 @@ namespace GigaPark.Model
         ///     Wird geworfen, wenn die übergebenen Parameter nicht den, im Tooltip beschriebenen,
         ///     Normen entsprechen.
         /// </exception>
-        [Obsolete("NOT YET IMPLEMENTED")]
         public string DriveOut(string licensePlate, bool isPermanentParker = false)
         {
             if (string.IsNullOrEmpty(licensePlate))
@@ -111,20 +114,24 @@ namespace GigaPark.Model
                 throw new ArgumentException(nameof(licensePlate));
             }
 
-            // TODO DriveOut Methode.
-            /*
-            
-                Die ParkplatzID im Eintrag des Parkscheins löschen.
-                Die ParkscheinID im Eintrag des Parkplatzes löschen.
-            
-            */
+            // TODO: isPermanentParker mit dem Objekt in Tabelle vergleichen.
 
-            throw new NotImplementedException();
+            int spotToClear = _dataService.DeleteParker(licensePlate, isPermanentParker);
+
+            // Ein Parkplatz kann keine ID kleiner als 1 haben.
+            if (spotToClear < 1)
+            {
+                return "Kennzeichen nicht gefunden";
+            }
+
+            _dataService.ClearSpot(spotToClear);
+
+            return "Bitte Fahren Sie heraus.";
         }
 
         /// <summary>
         ///     Ermittelt, ob genug Parkplätze, für die Einfahrt in das Parkhaus, verfügbar sind.
-        ///     Dabei wird Unterschieden, ob es sich bei dem Einfahrenden um einen Dauerparker 
+        ///     Dabei wird Unterschieden, ob es sich bei dem Einfahrenden um einen Dauerparker
         ///     handelt oder nicht. <br /><br />
         ///     Richtige Nutzung:<br />
         ///     <c>
@@ -136,7 +143,7 @@ namespace GigaPark.Model
         ///     Ist der Einfahrende ein Dauerparker?
         /// </param>
         /// <returns>
-        ///     Der Wahrheitswert, ob genug Parkplätze vorhanden sind. <c>true</c>, wenn dies zutrifft, 
+        ///     Der Wahrheitswert, ob genug Parkplätze vorhanden sind. <c>true</c>, wenn dies zutrifft,
         ///     <c>false</c> wenn nicht.
         /// </returns>
         public bool AreSpotsAvailable(bool isPermanentParker)

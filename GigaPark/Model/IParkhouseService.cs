@@ -35,7 +35,6 @@ namespace GigaPark.Model
         string DriveIn(string licensePlate, bool isPermanentParker);
 
         /// <summary>
-        ///     // TODO Beschreibung DriveOut().<br />
         ///     Simuliert das Herausfahren eines Fahrzeugs aus dem Parkhaus.<br /><br />
         ///     Richtige Nutzung:<br />
         ///     <c>
