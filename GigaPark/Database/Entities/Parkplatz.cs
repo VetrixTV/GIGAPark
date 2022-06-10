@@ -9,6 +9,7 @@ namespace GigaPark.Database.Entities
     ///     Entity-Modell für die Parkplatz-Tabelle.
     /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
+    [Obsolete]
     public class Parkplatz
     {
         /// <summary>
