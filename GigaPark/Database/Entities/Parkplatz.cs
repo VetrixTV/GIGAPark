@@ -3,6 +3,8 @@
  * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
  */
 
+using System;
+
 namespace GigaPark.Database.Entities
 {
     /// <summary>
