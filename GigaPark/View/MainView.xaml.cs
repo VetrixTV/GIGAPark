@@ -1,31 +1,20 @@
-﻿/*
- *  MainView.xaml.cs
- *  Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
- */
-
-using System;
-using System.Windows;
-using GigaPark.Database.Helpers;
+﻿using System.Windows;
 using GigaPark.Model;
 using GigaPark.Properties;
-using Microsoft.EntityFrameworkCore;
 
 namespace GigaPark.View
 {
-    /// <summary>
-    ///     Interaktionslogik für MainView.xaml
-    /// </summary>
     public partial class MainView
     {
         /// <summary>
-        ///     Datenbankkontext.
+        ///     Der Datenservice.
         /// </summary>
-        private readonly DataContext _context = new();
+        private readonly IDataService _dataService;
 
         /// <summary>
-        ///     Die Instanz des Parkhouse-Services.
+        ///     Der Parkhausservice.
         /// </summary>
-        private readonly ParkhouseService _parkhouseService;
+        private readonly IParkhouseService _parkhouseService;
 
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="MainView" />-Klasse.
@@ -34,96 +23,91 @@ namespace GigaPark.View
         {
             InitializeComponent();
 
-            // Das Fenster soll sich nicht vergrößern/verkleinern lassen.
             ResizeMode = ResizeMode.NoResize;
 
-            // Services initialisieren.
-            _parkhouseService = new ParkhouseService(_context,
-                                                     Settings.Default.MaxParkplatzCount);
+            _dataService = new DataService(Settings.Default.MaxSpotCount);
+            _parkhouseService = new ParkhouseService(_dataService);
+
             EntranceDisplay.Text = "Willkommen im GigaPark!";
             ExitDisplay.Text = "Bis Baldrian!";
 
-            InitializeDatabase();
+            _dataService.InitializeDatabase();
+            UpdateFreeParkinLotText();
         }
 
         /// <summary>
-        ///     Initialisiert die im Programm genutzten Services und Kontexte.
+        ///     Aktualisiert die Anzeige mit den freien Parkplätzen.
         /// </summary>
-        private void InitializeDatabase()
+        private void UpdateFreeParkinLotText()
         {
-            // Stellt sicher, dass die Datenbank existiert.
-            _context.Database.EnsureCreated();
-
-            // Lädt die Datentabellen aus dem Kontext und stellt diese zur Bearbeitung zur Verfügung.
-            _context.Parkplatz.Load();
-            _context.Parkschein.Load();
-
-            // Falls noch nicht vorhanden, die Parkplatztabelle mit den wichtigen Daten füllen.
-            // Diese Methode wird nur durchgeführt, wenn die Tabelle leer ist.
-            _parkhouseService.Prepare();
+            if (_parkhouseService.AreSpotsAvailable(false))
+            {
+                FreeParkinglots.Text = (_parkhouseService.GetFreeSpots() - 4) + " freie Plätze";
+            }
+            else
+            {
+                FreeParkinglots.Text = "Es gibt keine verfügbaren Plätze";
+            }
         }
 
         /// <summary>
-        ///     Behandelt die Interaktion mit dem Button "EntranceButton".
+        ///     Überprüft, ob das einfahrende Fahrzeug einfahren darf und setzt das Kennzeichen in der Datenbank.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void EntranceButton_Click(object sender, RoutedEventArgs e)
         {
-            // Sind mindestens 5 Parkplätze frei?
-            if (_parkhouseService.IsSpaceAvailable())
+            // TODO: Redundanz ausmerzen durch DeepEqual-Verfahren. (Methode in ParkhausService -> DatenService).
+            if (!_parkhouseService.AreSpotsAvailable(false))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+                return;
             }
 
-            EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text);
+            EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text, false);
+            UpdateFreeParkinLotText();
         }
 
         /// <summary>
-        ///     Behandelt die Interaktion mit dem Button "ExitButton".
+        ///     Überprüft, ob das einfahrende Fahrzeug einfahren darf und setzt das Kennzeichen in der Datenbank. (Dauerparker)
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text);
-        }
-
-        /// <summary>
-        ///     Behandelt die Interaktion mit dem Button "ExitButtonLongterm".
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        ///     Behandelt die Interaktion mit dem Button "ShowDatabaseButton"
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ShowDatabaseButton_Click(object sender, RoutedEventArgs e)
-        {
-            DatabaseView dbView = new(_context, _parkhouseService);
-            dbView.Show();
-        }
-
-        /// <summary>
-        ///     Behandelt die Interaktion mit dem Button "EntranceButtonLongterm"
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void EntranceButtonLongterm_Click(object sender, RoutedEventArgs e)
         {
             // Sind mindestens 5 Parkplätze frei?
-            if (_parkhouseService.IsSpaceAvailable())
+            // TODO: Redundanz ausmerzen durch DeepEqual-Verfahren. (Methode in ParkhausService -> DatenService).
+            if (!_parkhouseService.AreSpotsAvailable(true))
             {
                 EntranceDisplay.Text = ":(\nAktuell sind keine Parkplätze frei.";
+                return;
             }
 
             EntranceDisplay.Text = _parkhouseService.DriveIn(EntranceLicensePlateTextBox.Text, true);
+            UpdateFreeParkinLotText();
+        }
+
+        /// <summary>
+        ///     Entfernt das ausfahrende Fahrzeug aus der Datenbank (Parkplatz) und rechnet die Kosten ab.
+        /// </summary>
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, false);
+            UpdateFreeParkinLotText();
+        }
+
+        /// <summary>
+        ///     Entfernt das ausfahrende Fahrzeug aus der Datenbank (Parkplatz) und rechnet KEINE Kosten ab. (Dauerparker)
+        /// </summary>
+        private void ExitButtonLongterm_Click(object sender, RoutedEventArgs e)
+        {
+            ExitDisplay.Text = _parkhouseService.DriveOut(ExitLicensePlateTextBox.Text, true);
+            UpdateFreeParkinLotText();
+        }
+
+        /// <summary>
+        ///     Zeigt die Datenbank an.
+        /// </summary>
+        private void ShowDatabaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseView dbView = new(_dataService);
+            dbView.Show();
         }
     }
 }

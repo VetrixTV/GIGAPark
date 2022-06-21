@@ -1,189 +1,173 @@
-﻿/*
- * ParkhouseService.cs
- * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
- */
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using GigaPark.Database.Entities;
-using GigaPark.Database.Helpers;
 
 namespace GigaPark.Model
 {
     /// <summary>
-    ///     Klasse für das Verwalten von Datenzugriffen zur Parkhaus-Datenbank.
+    ///     Service für das Verwalten des Parkhauses. <br /> Implementiert die Schnittstelle <see cref="IParkhouseService" />.
     /// </summary>
     public class ParkhouseService : IParkhouseService
     {
         /// <summary>
-        ///     Der Datenbankkontext.
+        ///     Die Instanz eines Datenservices.
         /// </summary>
-        private readonly DataContext _context;
-
-        /// <summary>
-        ///     Maximale Anzahl an Parkplätzen.
-        /// </summary>
-        private readonly int _maxParkplatzCount;
+        private readonly IDataService _dataService;
 
         /// <summary>
         ///     Initialisiert eine neue Instanz der <see cref="ParkhouseService" />-Klasse.
         /// </summary>
-        /// <param name="context">Der Datenbankkontext, mit dem der Service arbeiten soll.</param>
-        /// <param name="maxParkplatzCount">Die Anzahl an maximal vorhandenen Parkplätzen.</param>
-        public ParkhouseService(DataContext context, int maxParkplatzCount)
+        /// <param name="dataService">
+        ///     Eine aktive Instanz eines Datenservices, dieser Service muss die Schnittstelle
+        ///     <see cref="IDataService" /> implementieren und darf nicht <c>null</c> sein.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        ///     Diese Ausnahme wird geworfen, wenn der, für den Prozess wichtige Datenservice,
+        ///     mit <c>null</c> übergeben wird.
+        /// </exception>
+        public ParkhouseService(IDataService dataService)
         {
-            _context = context;
-            _maxParkplatzCount = maxParkplatzCount;
+            _dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
         }
 
         /// <summary>
-        ///     Verwaltet das einfahrende Fahrzeug in der Datenbank.
-        ///     Es müssen mindestens 5 Parkplätze dafür frei sein.
+        ///     Erzeugt ein Objekt vom Typen <see cref="ParkingTicket" /> und lässt diese in die Datenbank eintragen.<br />
+        ///     Simuliert das Einfahren eines Fahrzeugs in das Parkhaus.<br /><br />
+        ///     Richtige Nutzung:<br />
+        ///     <c>
+        ///         _a.DriveIn("OSX1", false);<br />
+        ///         _a.DriveIn("OSX2");<br /><br />
+        ///     </c>
+        ///     Unzugelassene Nutzung:<br />
+        ///     <c>
+        ///         _a.DriveIn("", false);<br />
+        ///         _a.DriveIn(null);<br />
+        ///     </c>
         /// </summary>
-        /// <param name="licensePlate">Das Kennzeichen des einfahrenden Fahrzeugs.</param>
-        /// <param name="isDauerparker">Ist der Parker ein Dauerparker?</param>
-        public string DriveIn(string licensePlate, bool isDauerparker = false)
+        /// <param name="licensePlate">Das Kennzeichen des einfahrenden Fahrzeugs. Dieser Parameter muss übergeben werden.</param>
+        /// <param name="isPermanentParker">
+        ///     Gibt an, ob es sich bei dem einfahrenden Fahrzeug um einen Dauerparker handelt.<br />
+        ///     Dieser Parameter ist <c>optional</c>. Der Standardwert des Parameters ist <c>false</c>.
+        /// </param>
+        /// <returns>Gibt die Nachricht für das Display zurück.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Wird geworfen, wenn die übergebenen Parameter nicht den, im Tooltip beschriebenen,
+        ///     Normen entsprechen.
+        /// </exception>
+        public string DriveIn(string licensePlate, bool isPermanentParker = false)
         {
-            int parkId = GetAvailableParkplatz(isDauerparker);
-
-            // Eintrag in die Parkscheintabelle hinzufügen.
-            _context.Parkschein.Add(new Parkschein
+            if (string.IsNullOrEmpty(licensePlate))
             {
-                Kennzeichen = licensePlate,
-                Kosten = 0.00m, // Kosten werden bei Ausfahrt berechnet.
-                Einfahrt = DateTime.Now,
-                Ausfahrt = null,
-                IstDauerparker = isDauerparker,
-                ParkplatzId = parkId
+                throw new ArgumentException(nameof(licensePlate));
+            }
+
+            // ID eines freien Parkplatzes ermitteln.
+            int parkId = GetAvailableSpot(isPermanentParker);
+
+            int insertReturnCode = _dataService.InsertEntry(ticket: new ParkingTicket
+            {
+                LicensePlate = licensePlate,
+                Costs = 0.00m, // Kosten werden beim Ausfahren bestimmt.
+                DriveInDate = DateTime.Now,
+                DriveOutDate = null, // Ausfahrtszeit wird beim Ausfahren bestimmt.
+                IsPermanentParker = isPermanentParker,
+                SpotId = parkId
             });
-            _context.SaveChanges();
 
-            // Eintrag in der Parkplatztabelle anpassen.
-            Parkplatz parkplatz = _context.Parkplatz
-                                          .Where(o => o.Id == parkId)
-                                          .Select(o => o)
-                                          .First();
+            if (insertReturnCode == 1)
+            {
+                return "Dauerparkerstatus geändert.";
+            }
 
-            parkplatz.ParkscheinId = _context.Parkschein
-                                             .Where(o => o.ParkplatzId == parkId)
-                                             .Select(o => o.Id)
-                                             .First();
-            _context.SaveChanges();
+            // Parkplatz in der Datenbank belegen.
+            _dataService.UpdateParkingSpot(parkId);
 
             return "Bitte einfahren.";
         }
 
         /// <summary>
-        ///     Verwaltet das Ausfahren des Fahrzeugs in der Datenbank.
-        ///     Zwischen Dauerparkern und Einzelparkern wird durch das Kennzeichen unterschieden.
+        ///     Simuliert das Herausfahren eines Fahrzeugs aus dem Parkhaus.<br /><br />
+        ///     Richtige Nutzung:<br />
+        ///     <c>
+        ///         _a.DriveOut("OSX1", false);<br />
+        ///         _a.DriveOut("OSX2");<br /><br />
+        ///     </c>
+        ///     Falsche Nutzung:<br />
+        ///     <c>
+        ///         _a.DriveOut("", true);<br />
+        ///         _a.DriveOut(null);<br /><br />
+        ///     </c>
         /// </summary>
-        /// <param name="licensePlate">Das Kennzeichen des ausfahrenden Fahrzeugs.</param>
-        public string DriveOut(string licensePlate)
+        /// <param name="licensePlate">Das Kennzeichen des ausfahrenden Fahrzeugs. Dieser Parameter muss übergeben werden.</param>
+        /// <param name="isPermanentParker">
+        ///     Gibt an, ob es sich bei dem ausfahrendem Fahrzeug um einen Dauerparker handelt.<br />
+        ///     Dieser Parameter ist <c>optional</c>. Der Standardwert des Parameters ist <c>false</c>.
+        /// </param>
+        /// <returns>Gibt die Nachricht für das Display zurück.</returns>
+        /// <exception cref="ArgumentException">
+        ///     Wird geworfen, wenn die übergebenen Parameter nicht den, im Tooltip beschriebenen,
+        ///     Normen entsprechen.
+        /// </exception>
+        public string DriveOut(string licensePlate, bool isPermanentParker = false)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        ///     Ermittelt, ob genug Parkplätze im Parkhaus noch frei sind.
-        /// </summary>
-        /// <returns>true, wenn mindestens 5 Parkplätze frei sind, sonst false.</returns>
-        public bool IsSpaceAvailable()
-        {
-            return _context.Parkplatz.Count(o => o.ParkscheinId == null) < 5;
-        }
-
-        /// <summary>
-        ///     Ermittelt, wie viele Parkplätze im Parkhaus noch frei sind.
-        /// </summary>
-        /// <returns>Die genaue Anzahl, wie viele Parkplätze frei sind.</returns>
-        public int GetFreeSpaces()
-        {
-            return _context.Parkplatz.Count(o => o.ParkscheinId == null);
-        }
-
-        /// <summary>
-        ///     Setzt die Datenbank auf den Standard zurück.
-        /// </summary>
-        public void ResetDatabase()
-        {
-            // Alle Datensätze entfernen.
-            _context.Parkplatz.RemoveRange(_context.Parkplatz);
-            _context.Parkschein.RemoveRange(_context.Parkschein);
-
-            _context.SaveChanges();
-
-            Prepare();
-        }
-
-        /// <summary>
-        ///     Bereitet die Datenbank für den ersten Programmstart vor.
-        ///     Wenn die Anzahl an Einträgen, in der Tabelle "Parkplatz", nicht der vorgegebenen Menge entspricht oder diese leer
-        ///     ist, wird diese neu erstellt.
-        /// </summary>
-        public void Prepare()
-        {
-            // Die Anzahl an Einträgen in der Tabelle.
-            int entryCount = _context.Parkplatz.Count();
-
-            // Entspricht die Anzahl der Einträge den Vorgaben, nichts tun.
-            if (entryCount == _maxParkplatzCount)
+            if (string.IsNullOrEmpty(licensePlate))
             {
-                return;
+                throw new ArgumentException(nameof(licensePlate));
             }
 
-            // Entspricht die Anzahl der Einträge nicht den Vorgaben, alle Datensätze löschen.
-            _context.Parkplatz
-                    .RemoveRange(_context.Parkplatz
-                                         .ToList());
-            _context.SaveChanges();
+            // TODO: isPermanentParker mit dem Objekt in Tabelle vergleichen.
 
-            // Standardeinträge der Tabelle erstellen.
-            CreateParkplatzTable();
+            int spotToClear = _dataService.DeleteParker(licensePlate, isPermanentParker);
+
+            // Ein Parkplatz kann keine ID kleiner als 1 haben.
+            if (spotToClear < 1)
+            {
+                return "Kennzeichen nicht gefunden";
+            }
+
+            _dataService.ClearSpot(spotToClear);
+
+            return "Bitte Fahren Sie heraus.";
         }
 
         /// <summary>
-        ///     Erstellt den Standardsatz an Parkplatzeinträgen in der Tabelle.
+        ///     Ermittelt, ob genug Parkplätze, für die Einfahrt in das Parkhaus, verfügbar sind.
+        ///     Dabei wird Unterschieden, ob es sich bei dem Einfahrenden um einen Dauerparker
+        ///     handelt oder nicht. <br /><br />
+        ///     Richtige Nutzung:<br />
+        ///     <c>
+        ///         _a.AreSpotsAvailable(true);<br />
+        ///     </c>
+        ///     Wahrheitswerte können nicht <c>null</c> sein.
         /// </summary>
-        private void CreateParkplatzTable()
+        /// <param name="isPermanentParker">
+        ///     Ist der Einfahrende ein Dauerparker?
+        /// </param>
+        /// <returns>
+        ///     Der Wahrheitswert, ob genug Parkplätze vorhanden sind. <c>true</c>, wenn dies zutrifft,
+        ///     <c>false</c> wenn nicht.
+        /// </returns>
+        public bool AreSpotsAvailable(bool isPermanentParker)
         {
-            // Liste mit allen Einträgen, die in die Datenbank geschrieben werden sollen.
-            var toInsert = new List<Parkplatz>(_maxParkplatzCount);
-
-            for (int i = 0; i < _maxParkplatzCount; i++)
-            {
-                toInsert.Add(new Parkplatz
-                {
-                    IstDauerparkplatz = i < 40, // Nur die ersten 40 Parkplätze, sind für Dauerparker reserviert.
-                    ParkscheinId = null
-                });
-            }
-
-            _context.Parkplatz.AddRange(toInsert);
-            _context.SaveChanges();
+            return _dataService.AreSpotsAvailable(isPermanentParker);
         }
 
         /// <summary>
-        ///     Ermittelt die ID, eines freien Parkplatzes mit Berücksichtigung für Dauerparker.
+        ///     Ermittelt die genaue Anzahl der freien Parkplätze im Parkhaus.
         /// </summary>
-        /// <param name="isDauerparker">Ist der Parker ein Dauerparker?</param>
-        /// <returns>Die ermittelte ParkplatzID.</returns>
-        private int GetAvailableParkplatz(bool isDauerparker)
+        /// <returns>Die genaue Anzahl der freien Parkplätze im Parkhaus.</returns>
+        public int GetFreeSpots()
         {
-            if (isDauerparker)
-            {
-                // Hier werden aufgrund der Datentabelle automatisch Dauerparkplätze preferiert, da diese in der Tabelle als erstes vorkommen.
-                return _context.Parkplatz
-                               .Where(o => o.ParkscheinId == null) // Wo keine ParkscheinId hinterlegt ist.
-                               .Select(o => o.Id) // Nur IDs heraussuchen, die auf das Kriterium oben passen.
-                               .First(); // Das erste Ergebnis.
-            }
+            return _dataService.GetFreeSpotCount();
+        }
 
-            return _context.Parkplatz
-                           .Where(o => o.IstDauerparkplatz == false) // Kein Dauerparkplatz.
-                           .Where(o => o.ParkscheinId == null) // Wo keine ParkscheinId hinterlegt ist.
-                           .Select(o => o.Id)
-                           .First();
+        /// <summary>
+        ///     Ermittelt den ersten freien Parkplatz für das einfahrende Fahrzeug.
+        /// </summary>
+        /// <param name="isPermanentParker">Ist das einfahrende Fahrzeug ein Dauerparker?</param>
+        /// <returns>Die ID des ermittelten Parkplatzes.</returns>
+        private int GetAvailableSpot(bool isPermanentParker)
+        {
+            return _dataService.GetAvailableSpot(isPermanentParker);
         }
     }
 }

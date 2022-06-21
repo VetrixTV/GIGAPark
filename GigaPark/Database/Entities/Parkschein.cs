@@ -11,6 +11,7 @@ namespace GigaPark.Database.Entities
     ///     Entity-Modell für die Parkschein-Tabelle.
     /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
+    [Obsolete]
     public class Parkschein
     {
         /// <summary>

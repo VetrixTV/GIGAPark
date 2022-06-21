@@ -1,15 +1,11 @@
-﻿/*
- * DataContext.cs
- * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
- */
-
-using GigaPark.Database.Entities;
+﻿using GigaPark.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GigaPark.Database.Helpers
 {
     /// <summary>
-    ///     Klasse für das Verwalten von Datenbankkontexten.
+    ///     Stellt den Kontext zur Datenbank bereit. <br></br> Diese Klasse erbt von der <see cref="DbContext" />-Klasse, die
+    ///     eine aktive Instanz einer Datenbankverbindung repräsentiert.
     /// </summary>
     public class DataContext : DbContext
     {
@@ -40,21 +36,23 @@ namespace GigaPark.Database.Helpers
         /// </param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=parkhaus.db");
+            /*
+             * SQLite Datenbank verwenden.
+             * Die Datenbankdatei wird im Ordner der Executable erstellt und ist demnach lokal.
+             */
+            optionsBuilder.UseSqlite("Data Source=parkhouse.db");
         }
 
-        /// <summary>
-        ///     Gibt die <see cref="DbSet{TEntity}" />-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die
-        ///     Tabelle "Parkplatz" zu parsen.
-        /// </summary>
 #pragma warning disable CS8618
-        public DbSet<Parkplatz> Parkplatz { get; set; }
+        /// <summary>
+        ///     Gibt den Datenbanksatz für die Parkplätze an oder legt diesen fest.
+        /// </summary>
+        public DbSet<ParkingSpot> Spots { get; set; }
 
         /// <summary>
-        ///     Gibt die <see cref="DbSet{TEntity}" />-Instanz an, die es möglich macht, LINQ-Statements in SQL-Statements für die
-        ///     Tabelle "Parkschein" zu parsen.
+        ///     Gibt den Datenbanksatz für die Parkscheine an oder legt diesen fest.
         /// </summary>
-        public DbSet<Parkschein> Parkschein { get; set; }
+        public DbSet<ParkingTicket> Tickets { get; set; }
 #pragma warning restore CS8618
     }
 }

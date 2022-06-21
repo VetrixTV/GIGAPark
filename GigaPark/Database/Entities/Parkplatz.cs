@@ -3,12 +3,15 @@
  * Autor: Erik Ansmann, Wilhelm Adam, Nico Nowak
  */
 
+using System;
+
 namespace GigaPark.Database.Entities
 {
     /// <summary>
     ///     Entity-Modell für die Parkplatz-Tabelle.
     /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
+    [Obsolete]
     public class Parkplatz
     {
         /// <summary>

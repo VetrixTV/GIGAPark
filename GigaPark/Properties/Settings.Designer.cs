@@ -26,9 +26,18 @@ namespace GigaPark.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("180")]
-        public int MaxParkplatzCount {
+        public int MaxSpotCount {
             get {
-                return ((int)(this["MaxParkplatzCount"]));
+                return ((int)(this["MaxSpotCount"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int MinSpotCount {
+            get {
+                return ((int)(this["MinSpotCount"]));
             }
         }
     }
